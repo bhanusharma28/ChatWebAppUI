@@ -8,7 +8,8 @@ export class Signalr {
 
   startConnection() {
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("https://chatwebapp-zz5t.onrender.com/chathub")   // <-- your .NET port
+      .withUrl("https://chatwebapp-zz5t.onrender.com/chathub")   
+      // .withUrl("https://localhost:7261/chathub")   // <-- your .NET port
       .build();
 
     return this.connection.start();

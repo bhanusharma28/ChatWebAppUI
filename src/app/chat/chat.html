@@ -2,56 +2,94 @@
   Loading chat...
 </div>
 
-<div class="container">
+<!-- Make ENTIRE SCREEN a vertical flex container -->
+<div class="vh-100 d-flex flex-column overflow-hidden">
 
-  <!-- LEFT PANEL (USERS) -->
-  <div class="users">
-    <h3>💬 Users</h3>
+  <!-- ===== MOBILE TOP BAR WITH HAMBURGER ===== -->
+  <nav class="navbar bg-dark text-white d-md-none px-3 flex-shrink-0">
+    <button 
+      class="bg-dark border-0 text-white"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#usersDrawer"
+      style="font-size: 22px;">
+      ☰ &nbsp;&nbsp;Chats
+    </button>
+  </nav>
 
-    <div *ngFor="let u of users"
-        (click)="selectUser(u)"
-        class="user-item"
-        [class.active]="u === selectedUser">
-      {{u.name}}
-    </div>
-  </div>
+  <!-- Main content fills remaining space -->
+  <div class="container-fluid p-0 flex-grow-1 overflow-hidden">
+    <div class="d-flex h-100">
 
-  <!-- RIGHT PANEL (CHAT) -->
-  <div class="chat">
+      <!-- LEFT PANEL (USERS) — visible only on desktop -->
+      <div class="users d-none d-md-block">
+        <h3>💬 Users</h3>
 
-    <div class="chat-header">
-      <h3>Logged in as: <span>{{username}}</span></h3>
-      <h4>Chat with: <span>{{selectedUser?.name || 'Select a user'}}</span></h4>
-    </div>
+        <div *ngFor="let u of users"
+             (click)="selectUser(u)"
+             class="user-item"
+             [class.active]="u === selectedUser">
+          {{u.name}}
+        </div>
+      </div>
 
-    <!-- IMPORTANT: #scrollMe is used for auto-scroll -->
-    <div class="messages" #scrollMe>
-
-      <div *ngFor="let m of messages"
-           [ngClass]="{'mine': m.includes('You:') || m.includes(username), 
-                       'other': !(m.includes('You:') || m.includes(username))}">
-
-        <div class="sender">
-          {{ (m.includes('You:') || m.includes(username)) ? 'You' : selectedUser?.name }}
+      <!-- ===== USERS OFFCANVAS (MOBILE DRAWER) ===== -->
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="usersDrawer">
+        <div class="offcanvas-header bg-dark text-white">
+          <h5 class="offcanvas-title">💬 Users</h5>
+          <button type="button" class="bg-dark text-white border-0" data-bs-dismiss="offcanvas">X</button>
         </div>
 
-        <div class="text">
-          {{
-            m
-            .replace(username + ':', '')
-            .replace(selectedUser?.name + ':', '')
-            .replace('You:', '')
-            .trim()
-          }}
+        <div class="offcanvas-body bg-dark text-white">
+          <div *ngFor="let u of users"
+               (click)="selectUser(u)"
+               data-bs-dismiss="offcanvas"
+               class="p-2 mb-2 rounded"
+               [class.bg-primary]="u === selectedUser"
+               style="cursor:pointer;">
+            {{u.name}}
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL (CHAT) -->
+      <div class="chat flex-grow-1 d-flex flex-column overflow-hidden">
+
+        <div class="chat-header flex-shrink-0">
+          <h3>Logged in as: <span>{{username}}</span></h3>
+          <h4>Chat with: <span>{{selectedUser?.name || 'Select a user'}}</span></h4>
+        </div>
+
+        <!-- ONLY THIS PART SCROLLS -->
+        <div class="messages flex-grow-1 overflow-auto" #scrollMe>
+
+          <div *ngFor="let m of messages"
+               [ngClass]="{'mine': m.includes('You:') || m.includes(username), 
+                           'other': !(m.includes('You:') || m.includes(username))}">
+
+            <div class="sender">
+              {{ (m.includes('You:') || m.includes(username)) ? 'You' : selectedUser?.name }}
+            </div>
+
+            <div class="text">
+              {{
+                m
+                .replace(username + ':', '')
+                .replace(selectedUser?.name + ':', '')
+                .replace('You:', '')
+                .trim()
+              }}
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Input stays visible, not pushed down -->
+        <div class="input-area flex-shrink-0">
+          <input [(ngModel)]="message" placeholder="Type message..." />
+          <button (click)="send()">Send</button>
         </div>
 
       </div>
     </div>
-
-    <div class="input-area">
-      <input [(ngModel)]="message" placeholder="Type message..." />
-      <button (click)="send()">Send</button>
-    </div>
-
   </div>
 </div>
