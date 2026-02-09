@@ -1,0 +1,24 @@
+<div class="login-page">
+
+  <div class="login-wrapper">
+
+    <div class="login-left">
+      <h2>💬 Chat App</h2>
+      <p>Simple • Real-time • Modern</p>
+    </div>
+
+    <div class="login-right">
+      <h3>Welcome back</h3>
+      <p class="sub">Enter your name to continue</p>
+
+      <input 
+        [(ngModel)]="username"
+        placeholder="Enter your name"
+        (keyup.enter)="login()" />
+
+      <button (click)="login()">Enter Chat</button>
+    </div>
+
+  </div>
+
+</div>

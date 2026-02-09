@@ -1,15 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
-/* ======== LOGIN SCREEN (GLOBAL STYLES) ======== */
-
+/* Full page background - SAME as chat */
 .login-page {
   height: 100vh;
   width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f4f6fb;
+  background: #f4f6fb;   /* same as chat background */
 }
 
+/* Main login box */
 .login-wrapper {
   display: flex;
   width: 650px;
@@ -19,10 +18,10 @@
   box-shadow: 0 6px 18px rgba(0,0,0,0.15);
 }
 
-/* LEFT SIDE */
+/* LEFT SIDE - matches your USERS panel */
 .login-left {
   width: 45%;
-  background: #1f2937;
+  background: #1f2937;   /* same dark as users panel */
   color: white;
   display: flex;
   flex-direction: column;
@@ -30,7 +29,11 @@
   padding: 30px;
 }
 
-/* RIGHT SIDE */
+.login-left h2 {
+  margin-bottom: 6px;
+}
+
+/* RIGHT SIDE - clean white like chat panel */
 .login-right {
   width: 55%;
   background: white;
@@ -40,7 +43,16 @@
   justify-content: center;
 }
 
-/* Input */
+.login-right h3 {
+  margin-bottom: 6px;
+}
+
+.sub {
+  color: #6b7280;
+  margin-bottom: 14px;
+}
+
+/* Input style */
 .login-right input {
   padding: 10px;
   border-radius: 8px;
@@ -48,12 +60,12 @@
   margin-bottom: 12px;
 }
 
-/* Button */
+/* Button style - SAME BLUE as chat */
 .login-right button {
   padding: 10px;
   border-radius: 8px;
   border: none;
-  background: #2563eb;
+  background: #2563eb;  /* same as chat send button */
   color: white;
   cursor: pointer;
 }
@@ -62,7 +74,7 @@
   background: #1d4ed8;
 }
 
-/* MOBILE */
+/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
   .login-wrapper {
     flex-direction: column;
@@ -72,5 +84,9 @@
 
   .login-left, .login-right {
     width: 100%;
+  }
+
+  .login-left {
+    padding: 20px;
   }
 }
