@@ -90,7 +90,12 @@
         <!-- Input stays visible, not pushed down -->
         <div class="input-area flex-shrink-0">
           <input [(ngModel)]="message" placeholder="Type message..." />
-          <button (click)="send()">Send</button>
+          <button 
+            type="button"
+            (mousedown)="$event.preventDefault()" 
+            (click)="send()">
+            Send
+          </button>
         </div>
 
       </div>

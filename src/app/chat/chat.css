@@ -166,9 +166,9 @@ button:hover {
 .desktop-only {
   display: block;
 }
-
 /* ============ MOBILE RESPONSIVE ============ */
 @media (max-width: 768px) {
+
   .mobile-header {
     display: flex;
   }
@@ -177,11 +177,7 @@ button:hover {
     display: none;
   }
 
-  .container {
-    flex-direction: column;
-  }
-
-  /* USERS BECOME SLIDE DRAWER */
+  /* KEEP your slide drawer behavior */
   .users {
     position: fixed;
     top: 50px;
@@ -202,7 +198,21 @@ button:hover {
     padding: 8px;
   }
 
+  /* 🔥 FIX: allow flex scrolling instead of fixed height */
   .messages {
-    height: calc(100vh - 140px);
+    flex: 1;
+    min-height: 0;      /* VERY IMPORTANT for mobile */
+    overflow-y: auto;
   }
+
+  /* 🔥 FIX: keep input always visible at bottom */
+  .input-area {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 8px;
+    border-top: 1px solid #ddd;
+    z-index: 10;
+  }
+
 }
