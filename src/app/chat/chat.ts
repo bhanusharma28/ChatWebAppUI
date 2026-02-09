@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { Signalr } from '../services/signalr';
 import { Api } from '../services/api';
 import { User } from '../services/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -34,10 +35,15 @@ export class Chat implements OnInit {
     private api: Api,
     private user: User,
     private ngZone: NgZone,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
-  showUsers = false;   // controls mobile hamburger menu
+  logout() {
+  this.user.clearUser();      // clear login + selected chat
+  this.router.navigate(['/']);        // or redirect to login
+  }
+
   get username() {
     return this.user.getUsername();
   }
@@ -48,15 +54,29 @@ export class Chat implements OnInit {
 
   async ngOnInit() {
 
-    // Wait for login
-    await this.waitForUser();
+    if (!this.user.getUserId()) {
+      alert("Session expired. Please login again.");
+      this.router.navigate(['/']);
+    }
 
+    await this.waitForUser();
     await this.signalr.startConnection();
 
-    // Load users
+    // Load users + RESTORE LAST CHAT
     this.api.getAllUsers().subscribe(users => {
       this.ngZone.run(() => {
+
         this.users = users.filter(u => u.userId !== this.userId);
+
+        // 🔥 Restore last opened chat after refresh
+        const lastChatUserId = this.user.getSelectedChatUser();
+        if (lastChatUserId) {
+          const found = this.users.find(u => u.userId === lastChatUserId);
+          if (found) {
+            setTimeout(() => this.selectUser(found), 100);
+          }
+        }
+
         this.isReady = true;
         this.cdr.detectChanges();
       });
@@ -82,7 +102,10 @@ export class Chat implements OnInit {
     this.selectedUser = u;
     this.messages = [];
 
-    this.api.getChatHistory(this.userId, u.userId)
+    // 🔥 Save last opened chat
+    this.user.saveSelectedChatUser(u.userId);
+
+    this.api.getChatHistory(this.userId!, u.userId)
       .subscribe(history => {
         this.ngZone.run(() => {
           this.messages = history.map(h => h.encryptedMessage);
@@ -98,10 +121,8 @@ export class Chat implements OnInit {
       return;
     }
 
-    //this.messages.push("You: " + this.message);
-
     this.signalr.sendMessage(
-      this.userId,
+      this.userId!,
       this.selectedUser.userId,
       `${this.username}: ${this.message}`
     );
