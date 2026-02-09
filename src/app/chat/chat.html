@@ -54,13 +54,17 @@
       <!-- RIGHT PANEL (CHAT) -->
       <div class="chat flex-grow-1 d-flex flex-column overflow-hidden">
 
-        <div class="chat-header flex-shrink-0">
-          <h3>Logged in as: <span>{{username}}</span></h3>
-          <h4>Chat with: <span>{{selectedUser?.name || 'Select a user'}}</span></h4>
+        <div class="chat-header flex-shrink-0 d-flex justify-content-between align-items-center">
 
-          <button class="btn btn-danger btn-sm mt-2" (click)="logout()">
+          <div>
+            <h6>Logged in as: <span>{{username}}</span></h6>
+            <h6>Chat with: <span>{{selectedUser?.name || 'Select a user'}}</span></h6>
+          </div>
+
+          <button class="btn btn-danger btn-sm" (click)="logout()">
             Logout
           </button>
+
         </div>
 
         <!-- ONLY THIS PART SCROLLS -->
