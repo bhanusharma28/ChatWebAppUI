@@ -1,0 +1,9 @@
+staticSites:
+  - name: chatwebappui
+    buildCommand: npm run build
+    publishPath: dist/SignalRChatWebUI/browser
+
+routes:
+  - type: rewrite
+    source: /.*
+    destination: /index.html
