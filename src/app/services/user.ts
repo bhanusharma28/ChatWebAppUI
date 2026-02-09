@@ -13,17 +13,17 @@ export class User {
       expiresAt: Date.now() + (30 * 60 * 1000) // 30 minutes
     };
 
-    localStorage.setItem(this.KEY, JSON.stringify(payload));
+    sessionStorage.setItem(this.KEY, JSON.stringify(payload));
   }
 
   getUsername() {
-    const data = localStorage.getItem(this.KEY);
+    const data = sessionStorage.getItem(this.KEY);
     if (!data) return '';
 
     const parsed = JSON.parse(data);
 
     if (Date.now() > parsed.expiresAt) {
-      localStorage.removeItem(this.KEY);
+      sessionStorage.removeItem(this.KEY);
       return '';
     }
 
@@ -31,13 +31,13 @@ export class User {
   }
 
   getUserId() {
-    const data = localStorage.getItem(this.KEY);
+    const data = sessionStorage.getItem(this.KEY);
     if (!data) return '';
 
     const parsed = JSON.parse(data);
 
     if (Date.now() > parsed.expiresAt) {
-      localStorage.removeItem(this.KEY);
+      sessionStorage.removeItem(this.KEY);
       return '';
     }
 
@@ -45,21 +45,20 @@ export class User {
   }
 
   clearUser() {
-    localStorage.removeItem(this.KEY);
-    localStorage.removeItem(this.SELECTED_CHAT_KEY);
+    sessionStorage.removeItem(this.KEY);
+    sessionStorage.removeItem(this.SELECTED_CHAT_KEY);
   }
 
-  // -------- NEW PART: remember last opened chat --------
-
+  // Remember last opened chat
   saveSelectedChatUser(userId: string) {
-    localStorage.setItem(this.SELECTED_CHAT_KEY, userId);
+    sessionStorage.setItem(this.SELECTED_CHAT_KEY, userId);
   }
 
   getSelectedChatUser(): string | null {
-    return localStorage.getItem(this.SELECTED_CHAT_KEY);
+    return sessionStorage.getItem(this.SELECTED_CHAT_KEY);
   }
 
   clearSelectedChatUser() {
-    localStorage.removeItem(this.SELECTED_CHAT_KEY);
+    sessionStorage.removeItem(this.SELECTED_CHAT_KEY);
   }
 }
