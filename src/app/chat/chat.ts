@@ -28,6 +28,11 @@ export class Chat implements OnInit {
   messages: string[] = [];
   isReady = false;
 
+  // ---- YOUR RULE (IDs) ----
+  private bhanuId = '0BF3B663-2FA5-4B12-B4D9-CAAB1E5B6AD6';      // Bhanu
+  private akankshaId = '7C668F42-338F-4F50-ADE9-0D6B62E4FED6'; // Akanksha
+  // -------------------------
+
   @ViewChild('scrollMe') private scrollContainer!: ElementRef;
 
   constructor(
@@ -40,8 +45,8 @@ export class Chat implements OnInit {
   ) {}
 
   logout() {
-  this.user.clearUser();      // clear login + selected chat
-  this.router.navigate(['/']);        // or redirect to login
+    this.user.clearUser();
+    this.router.navigate(['/']);
   }
 
   get username() {
@@ -57,18 +62,36 @@ export class Chat implements OnInit {
     if (!this.user.getUserId()) {
       alert("Session expired. Please login again.");
       this.router.navigate(['/']);
+      return;
     }
 
     await this.waitForUser();
     await this.signalr.startConnection();
 
-    // Load users + RESTORE LAST CHAT
     this.api.getAllUsers().subscribe(users => {
       this.ngZone.run(() => {
 
-        this.users = users.filter(u => u.userId !== this.userId);
+        const currentUserId = (this.userId || '').toUpperCase();
 
-        // 🔥 Restore last opened chat after refresh
+        console.log('Logged in user:', currentUserId);
+
+        // --------- FIXED FILTER (THIS IS THE IMPORTANT PART) ---------
+        this.users = users
+          .filter(u => u.userId?.toUpperCase() !== currentUserId) // never show yourself
+          .filter(u => {
+
+            // If Bhanu is logged in → show Akanksha
+            if (currentUserId === this.bhanuId) {
+              return true;
+            }
+
+            // Otherwise hide Akanksha
+            return u.userId?.toUpperCase() !== this.akankshaId;
+          });
+
+        console.log('Final visible users:', this.users);
+        // -------------------------------------------------------------
+
         const lastChatUserId = this.user.getSelectedChatUser();
         if (lastChatUserId) {
           const found = this.users.find(u => u.userId === lastChatUserId);
@@ -82,7 +105,6 @@ export class Chat implements OnInit {
       });
     });
 
-    // Listen for live messages
     this.signalr.onMessage((senderId: string, msg: string) => {
       this.ngZone.run(() => {
         this.messages.push(msg);
@@ -102,7 +124,6 @@ export class Chat implements OnInit {
     this.selectedUser = u;
     this.messages = [];
 
-    // 🔥 Save last opened chat
     this.user.saveSelectedChatUser(u.userId);
 
     this.api.getChatHistory(this.userId!, u.userId)
