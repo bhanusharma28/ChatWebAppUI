@@ -71,11 +71,11 @@
         <div class="messages flex-grow-1 overflow-auto" #scrollMe>
 
           <div *ngFor="let m of messages"
-               [ngClass]="{'mine': m.includes('You:') || m.includes(username), 
-                           'other': !(m.includes('You:') || m.includes(username))}">
+               [ngClass]="{'mine': m.includes('You:') || m.includes(username+':'), 
+                           'other': !(m.includes('You:') || m.includes(username+':'))}">
 
             <div class="sender">
-              {{ (m.includes('You:') || m.includes(username)) ? 'You' : selectedUser?.name }}
+              {{ (m.includes('You:') || m.includes(username+':')) ? 'You' : selectedUser?.name }}
             </div>
 
             <div class="text">
